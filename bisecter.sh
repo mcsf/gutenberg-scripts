@@ -41,18 +41,26 @@ DST=workflow-downloads
 rm -rf "$DST"
 gh run download --dir "$DST" "$ID"
 
-# Verify file existence
-FILE="$DST/gutenberg-plugin/gutenberg.zip"
-if ! [ -s "$FILE" ]; then
-	echo "error: could not find $FILE in $DST"
-	exit 125 # Skip revision as untestable
-fi
+launch_wpnow() {
+	dir="$1"
+	cd "$dir" || exit 255
+	wp-now start >/dev/null 2>&1 &
+	echo $!
+}
 
-# Set up test site using wp-now
-cd "$(dirname "$FILE")" || exit 255
-unzip "$(basename "$FILE")" >/dev/null 2>&1
-wp-now start >/dev/null 2>&1 &
-WPNOW_PID=$!
+# Verify file existence, otherwise build Gutenberg ourselves
+FILE="$DST/gutenberg-plugin/gutenberg.zip"
+if [ -s "$FILE" ]; then
+	if ! unzip -d "$DST" "$FILE" >/dev/null 2>&1; then
+		echo "error: could not unzip $FILE"
+		exit 255
+	fi
+	WPNOW_PID=$(launch_wpnow "$DST")
+else
+	time npm ci
+	time npm run build
+	WPNOW_PID=$(launch_wpnow .)
+fi
 
 # As a bonus, replace Zenity with a more portable prompt. Since `read -p` is
 # not POSIX-compliant, use a combination of `printf` and `read`.
