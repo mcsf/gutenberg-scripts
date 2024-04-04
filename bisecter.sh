@@ -21,8 +21,6 @@ if ! unzip -h >/dev/null 2>&1; then
 	exit 255 # Abort bisection
 fi
 
-echo "Using commit $COMMIT"
-
 # Query GH workflow runs and retrieve workflow ID
 ID=$(gh run list \
 	--commit "$COMMIT" \
@@ -38,8 +36,6 @@ if [ -z "$ID" ]; then
 	exit 125 # Skip revision as untestable
 fi
 
-echo "Found workflow ID $ID"
-
 # Prepare download directory and download
 DST=workflow-downloads
 rm -rf "$DST"
@@ -52,15 +48,11 @@ if ! [ -s "$FILE" ]; then
 	exit 125 # Skip revision as untestable
 fi
 
-echo "Plugin ZIP file downloaded to $FILE"
-
 # Set up test site using wp-now
 cd "$(dirname "$FILE")" || exit 255
 unzip "$(basename "$FILE")" >/dev/null 2>&1
 wp-now start >/dev/null 2>&1 &
 WPNOW_PID=$!
-
-echo "Please test this version and report back"
 
 # As a bonus, replace Zenity with a more portable prompt. Since `read -p` is
 # not POSIX-compliant, use a combination of `printf` and `read`.
@@ -75,6 +67,7 @@ confirm() {
 	done
 }
 
+echo "Please test this version and report back"
 confirm "Is this version good?"
 status=$?
 
