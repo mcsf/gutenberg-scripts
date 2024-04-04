@@ -83,7 +83,7 @@ list_descendants() {
 }
 
 # shellcheck disable=SC2046
-kill $(list_descendants $WPNOW_PID)
+kill $(list_descendants "$WPNOW_PID")
 
 # Finally, feed result back to `git bisect`
 exit $status
