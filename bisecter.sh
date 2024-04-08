@@ -21,6 +21,12 @@ if ! unzip -h >/dev/null 2>&1; then
 	exit 255 # Abort bisection
 fi
 
+if git status -s | grep -qEv '^\?'; then
+	echo "error: uncommitted changes; please stash or discard before proceeding"
+	git status -s | grep -Ev '^\?'
+	exit 255 # Abort bisection
+fi
+
 # Query GH workflow runs and retrieve workflow ID
 ID=$(gh run list \
 	--commit "$COMMIT" \
@@ -41,26 +47,30 @@ DST=workflow-downloads
 rm -rf "$DST"
 gh run download --dir "$DST" "$ID"
 
-launch_wpnow() {
-	dir="$1"
-	cd "$dir" || exit 255
-	wp-now start >/dev/null 2>&1 &
-	echo $!
-}
-
 # Verify file existence, otherwise build Gutenberg ourselves
 FILE="$DST/gutenberg-plugin/gutenberg.zip"
 if [ -s "$FILE" ]; then
-	if ! unzip -d "$DST" "$FILE" >/dev/null 2>&1; then
+	# unzip options:
+	# -q: quiet
+	# -o: ovewrite
+	if ! unzip -qo "$FILE" ; then
 		echo "error: could not unzip $FILE"
-		exit 255
+		exit 255 # Abort bisection
 	fi
-	WPNOW_PID=$(launch_wpnow "$DST")
 else
 	time npm ci
 	time npm run build
-	WPNOW_PID=$(launch_wpnow .)
 fi
+
+if ! [ -d "${WPNOW_DIR:=.}" ]; then
+	echo "error: cannot find directory $WPNOW_DIR"
+	exit 255 # Abort bisection
+fi
+(
+       cd "$WPNOW_DIR" || exit
+       wp-now start >/dev/null 2>&1
+) &
+WPNOW_PID=$!
 
 # As a bonus, replace Zenity with a more portable prompt. Since `read -p` is
 # not POSIX-compliant, use a combination of `printf` and `read`.
@@ -93,6 +103,9 @@ list_descendants() {
 
 # shellcheck disable=SC2046
 kill $(list_descendants "$WPNOW_PID")
+
+# Clean up, since unzipping taints files like gutenberg.php
+git checkout -f
 
 # Finally, feed result back to `git bisect`
 exit $status
