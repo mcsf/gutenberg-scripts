@@ -81,7 +81,8 @@ status=$?
 
 # NOTE: Because wp-now spawns subsequent processes, the usual `kill %1` is not
 # enough. To be safe, let's explicitly kill all descendants.
-
+#
+# Tracked at https://github.com/WordPress/playground-tools/issues/220
 list_descendants() {
 	children=$(pgrep -P "$1")
 	for pid in $children; do
