@@ -2,8 +2,9 @@
 
 scripts/load-build || exit 255 # Abort bisection
 
+echo "Build ready. Go test it!"
 
-echo "Build ready."
+# Prompt the user in order to return the correct status code to git-bisect
 while true; do
 	printf "git bisect [good/bad/old/new]: "
 	read -r yn

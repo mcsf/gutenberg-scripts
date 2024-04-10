@@ -1,6 +1,9 @@
 #!/bin/sh
 
+# Exit immediately on any failure
 set -e
 
+# Try downloading gutenberg.zip, then unzip silently into the current directory.
+# Fall back to a proper build with NPM.
 (scripts/get-plugin-zip && unzip -qo gutenberg.zip && rm -f gutenberg.zip) \
 	|| (npm ci && npm run build)
