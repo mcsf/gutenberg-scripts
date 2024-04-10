@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+
+(scripts/get-plugin-zip && unzip -qo gutenberg.zip && rm -f gutenberg.zip) \
+	|| (npm ci && npm run build)
