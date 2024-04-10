@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+(./get-plugin-zip && unzip -qo gutenberg.zip && rm -f gutenberg.zip) \
+	|| (npm ci && npm run build)
+
+echo "Build ready."
+while true; do
+	printf "git bisect [good/bad/old/new]: "
+	read -r yn
+	case $yn in
+		good|old) exit 0;;
+		bad|new) exit 1;;
+	esac
+done

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Exit immediately on any failure
+set -e
+
+# Defaults
+: "${REVISION:=$(git rev-parse HEAD)}"
+
+WORKFLOW_ID=$(gh run list \
+	--commit "$REVISION" \
+	--workflow 'Build Gutenberg Plugin Zip' \
+	--status success \
+	--limit 1 \
+	--json databaseId \
+	--template '{{range .}}{{printf "%.f\n" .databaseId}}{{end}}'
+)
+
+# Ensure we have something
+[ -n "$WORKFLOW_ID" ]
+
+# Implicitly download gutenberg.zip into current directory
+[ -f gutenberg.zip ] && rm -i gutenberg.zip
+gh run download "$WORKFLOW_ID" -n gutenberg-plugin

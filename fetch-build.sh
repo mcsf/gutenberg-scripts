@@ -1,5 +1,9 @@
 #!/bin/sh
 
+#########################################################
+# SUPERSEDED BY SCRIPTS get-and-bisect AND get-plugin-zip
+#########################################################
+
 # Default arguments
 COMMIT="HEAD"
 OUT_FILE="gutenberg.zip"
