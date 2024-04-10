@@ -1,8 +1,7 @@
 #!/bin/sh
 
-set -e
+scripts/load-build || exit 255 # Abort bisection
 
-scripts/load-build
 
 echo "Build ready."
 while true; do
