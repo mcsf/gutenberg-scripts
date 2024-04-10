@@ -2,6 +2,11 @@
 
 Drop or symlink this repository into a directory called `scripts` at the root of your Gutenberg repository.
 
+## Requirements
+
+* [`gh`](https://github.com/cli/cli), GitHub's CLI tool
+* An implementation of `unzip` compatible with mine :) (with options `-q` and `-o`)
+
 ## Scripts
 
 ### `get-plugin-zip`
