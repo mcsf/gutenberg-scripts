@@ -18,5 +18,5 @@ WORKFLOW_ID=$(gh run list \
 [ -n "$WORKFLOW_ID" ]
 
 # Implicitly download gutenberg.zip into current directory
-[ -f gutenberg.zip ] && rm -i gutenberg.zip
+[ -f gutenberg.zip ] && rm gutenberg.zip && echo "Overwriting gutenberg.zip"
 gh run download "$WORKFLOW_ID" -n gutenberg-plugin
