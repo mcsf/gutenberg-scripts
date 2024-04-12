@@ -12,8 +12,7 @@ WORKFLOW_ID=$(gh run list \
 	--status success \
 	--limit 1 \
 	--json databaseId \
-	--template '{{range .}}{{printf "%.f\n" .databaseId}}{{end}}'
-)
+	--template '{{range .}}{{printf "%.f\n" .databaseId}}{{end}}')
 
 # Ensure we have something
 [ -n "$WORKFLOW_ID" ]
