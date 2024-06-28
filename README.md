@@ -56,7 +56,7 @@ Example usage:
 $ git bisect start
 $ git bisect bad trunk
 $ git bisect good v17.0.0
-$ git bisect run scripts/get-and-bisect
+$ git bisect run scripts/load-and-bisect
 
 Bisecting: 6 revisions left to test after this (roughly 3 steps)
 [394abb3cec24e48011d3aebfabb9ed180e7a0d77] Update: Remove keyCode usage from dataviews package. (#60585)
