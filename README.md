@@ -1,8 +1,12 @@
+## What
+
+_A small collection of minimal scripts to help in everyday tasks developing [Gutenberg](https://github.com/WordPress/gutenberg), like debugging or quick branch switches. They are meant to compose nicely together or within custom scripts._
+
 ## Installation
 
 Drop or symlink this repository into a directory called `scripts` at the root of your Gutenberg repository.
 
-## Requirements
+### Requirements
 
 * [`gh`](https://github.com/cli/cli), GitHub's CLI tool
 * An implementation of `unzip` compatible with mine :) (with options `-q` and `-o`)
@@ -39,7 +43,7 @@ $ scripts/load-build   # Load it without 'npm run build'
 
 ### `load-and-bisect`
 
-* Can be used to greatly speed up a git-bisect task by using `load-build`
+* Can be used to greatly speed up a git-bisect task by using its sibling `load-build`
   - Where a full `npm ci && npm run build` cycle can take 5 minutes, loading from a ZIP file takes about 5 seconds
 * At each bisection step:
   - The user can go manually test Gutenberg as soon as the console reads "Build ready"
