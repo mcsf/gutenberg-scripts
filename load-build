@@ -3,6 +3,16 @@
 # Exit immediately on any failure
 set -e
 
+# Require a clean working directory
+if ! git diff-index --quiet HEAD; then
+	cat <<END
+$0: you have local uncommitted changes, which could be unintentionally
+overwritten by this script. Please commit your changes or stash them before you
+continue.
+END
+	exit 1
+fi
+
 # Try downloading gutenberg.zip, then unzip silently into the current directory.
 # Fall back to a proper build with NPM.
 (scripts/get-plugin-zip && unzip -qo gutenberg.zip && rm -f gutenberg.zip) \
