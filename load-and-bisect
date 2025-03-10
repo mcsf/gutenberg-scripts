@@ -9,7 +9,11 @@ while true; do
 	printf "git bisect [good/bad/old/new]: "
 	read -r yn
 	case $yn in
-		good|old) exit 0;;
-		bad|new) exit 1;;
+		good|old) status=0; break;;
+		bad|new) status=1; break;;
 	esac
 done
+
+git checkout -- gutenberg.php
+
+exit $status
